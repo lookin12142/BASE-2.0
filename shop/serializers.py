@@ -1,6 +1,6 @@
-# shop/serializers.py
+
 from rest_framework import serializers
-from .models import Category, Product, Customer, Order, OrderItem
+from .models import Category, Product, Customer, Order, OrderItem, Mascota, EmergencyHistory
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,6 +27,18 @@ class OrderItemSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = '__all__'
         
-class CreatePaymentIntentSerializer(serializers.Serializer):
-    amount = serializers.IntegerField()
-    currency = serializers.CharField(max_length=3)
+
+class MascotaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Mascota
+        fields = '__all__'
+
+
+
+class EmergencyHistorySerializer(serializers.ModelSerializer):
+    customer = CustomerSerializer()
+    mascota = MascotaSerializer()
+
+    class Meta:
+        model = EmergencyHistory
+        fields = '__all__'

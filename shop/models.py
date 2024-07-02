@@ -1,9 +1,10 @@
-# shop/models.py
+
 from django.db import models
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='category_images/', blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -17,6 +18,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='product_images/', blank=True, null=True)  
 
     def __str__(self):
         return self.name
@@ -30,6 +32,7 @@ class Customer(models.Model):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+
 
 class Order(models.Model):
     customer = models.ForeignKey(Customer, related_name='orders', on_delete=models.CASCADE)
@@ -48,3 +51,28 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f'{self.quantity} of {self.product.name}'
+
+
+class Mascota(models.Model):
+    customer = models.ForeignKey('Customer', related_name='mascotas', on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=100)
+    especie = models.CharField(max_length=100)
+    raza = models.CharField(max_length=100)
+    sexo = models.CharField(max_length=10)
+    fecha_nacimiento = models.DateField()
+    peso = models.FloatField()
+    nombre_propietario = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nombre
+
+
+class EmergencyHistory(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    mascota = models.ForeignKey(Mascota, on_delete=models.CASCADE)
+    location = models.JSONField()
+    timestamp = models.DateTimeField()
+    details = models.TextField()
+    
+    def __str__(self):
+        return f"{self.mascota.nombre} - {self.timestamp}"
